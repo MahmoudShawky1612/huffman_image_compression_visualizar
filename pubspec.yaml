@@ -41,6 +41,7 @@ dependencies:
   flutter_animate: ^4.5.2
   flutter_image_gallery_saver: ^0.0.2
   permission_handler: ^12.0.0+1
+  pdf: ^3.11.3
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
@@ -54,7 +53,6 @@ Map<int, String> generateHuffmanCodes(HuffmanNode root) {
     traverse(node.left, code + '0');
     traverse(node.right, code + '1');
   }
-
   traverse(root, '');
   return codes;
 }
@@ -110,9 +108,7 @@ Uint8List bitstreamToBytes(String bits) {
 Uint8List serializeHuffmanCodes(Map<int, String> huffmanCodes) {
   List<int> buffer = [];
   // Write number of Huffman codes (2 bytes)
-  buffer.addAll(
-    Uint8List(2)..buffer.asByteData().setUint16(0, huffmanCodes.length),
-  );
+  buffer.addAll(Uint8List(2)..buffer.asByteData().setUint16(0, huffmanCodes.length));
   // Write each code: pixel value (1 byte), code length (1 byte), code bits
   huffmanCodes.forEach((pixelValue, code) {
     buffer.add(pixelValue & 0xFF); // Pixel value (1 byte)

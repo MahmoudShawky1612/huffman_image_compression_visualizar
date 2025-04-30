@@ -1,7 +1,13 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:permission_handler/permission_handler.dart';
 
 import 'huffman_class.dart';
 import 'huffman_tree_painter.dart';
@@ -19,7 +25,7 @@ class VisualizationTabWidget extends StatelessWidget {
   final VoidCallback onToggleAnimation;
   final ValueChanged<double> onStepDurationChanged;
 
-  const VisualizationTabWidget({
+  VisualizationTabWidget({
     super.key,
     required this.screenSize,
     required this.compressionSteps,
@@ -33,35 +39,171 @@ class VisualizationTabWidget extends StatelessWidget {
     required this.onStepDurationChanged,
   });
 
+  final GlobalKey _treeBoundaryKey = GlobalKey();
+
+  Future<void> _downloadTree(BuildContext context,
+      HuffmanNode root,
+      Size screenSize,) async {
+    // Show dialog to choose format
+    final format = await showDialog<String>(
+      context: context,
+      builder:
+          (context) =>
+          AlertDialog(
+            title: const Text('Choose Download Format'),
+            content: const Text('Select the format to save the Huffman tree.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'pdf'),
+                child: const Text('PDF'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'png'),
+                child: const Text('PNG'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, null),
+                child: const Text('Cancel'),
+              ),
+            ],
+          ),
+    );
+
+    if (format == null) return;
+
+    // Request storage permissions
+    var status = await Permission.manageExternalStorage.request();
+    if (status.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Storage permission denied')),
+      );
+      return;
+    }
+
+    try {
+      // Calculate tree dimensions
+      double nodeSpacing = 60.0;
+      double horizontalMargin = 40.0;
+      double treeWidth = TreeWidthCalculator.calculateTreeWidth(
+        root,
+        nodeSpacing,
+      );
+      double totalWidth = max(
+        treeWidth + horizontalMargin * 2,
+        screenSize.width,
+      );
+      double treeHeight = screenSize.height * 1.5;
+
+      // Render the entire tree
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(
+        recorder,
+        Rect.fromLTWH(0, 0, totalWidth, treeHeight),
+      );
+      final painter = HuffmanTreePainter(root, 1.0); // Full animation value
+      painter.paint(canvas, Size(totalWidth, treeHeight));
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(
+        totalWidth.toInt(),
+        treeHeight.toInt(),
+      );
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      // Determine save path
+      Directory? downloadsDir;
+      if (Platform.isAndroid) {
+        downloadsDir = Directory('/storage/emulated/0/Download');
+      } else {
+        downloadsDir = await getApplicationDocumentsDirectory();
+      }
+      if (!downloadsDir.existsSync()) {
+        downloadsDir.createSync(recursive: true);
+      }
+
+      final timestamp = DateTime
+          .now()
+          .millisecondsSinceEpoch;
+
+      if (format == 'pdf') {
+        // Save as PDF
+        final pdf = pw.Document();
+        final pwImage = pw.MemoryImage(pngBytes);
+        pdf.addPage(
+          pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context ctx) {
+              final maxWidth = ctx.page.pageFormat.availableWidth;
+              final aspectRatio = totalWidth / treeHeight;
+              final height = maxWidth / aspectRatio;
+              return pw.Center(
+                child: pw.Image(pwImage, width: maxWidth, height: height),
+              );
+            },
+          ),
+        );
+
+        final file = File('${downloadsDir.path}/huffman_tree_$timestamp.pdf');
+        await file.writeAsBytes(await pdf.save());
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('PDF saved to ${file.path}')));
+      } else {
+        // Save as PNG
+        final file = File('${downloadsDir.path}/huffman_tree_$timestamp.png');
+        await file.writeAsBytes(pngBytes);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('PNG saved to ${file.path}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error saving file: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(screenSize.width * 0.04),
       child:
-          compressionSteps.isEmpty
-              ? _buildPlaceholder(
-                'Select an image to see Huffman tree visualization',
-                screenSize,
-              )
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildVisualizationControls(screenSize),
-                  SizedBox(height: screenSize.height * 0.02),
-                  Expanded(child: _buildHuffmanVisualization(screenSize)),
-                  SizedBox(height: screenSize.height * 0.01),
-                  if (currentStep < compressionSteps.length - 1)
-                    const Text(
-                      'Merging nodes with lowest frequencies',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  if (currentStep == compressionSteps.length - 1)
-                    const Text(
-                      'Final Huffman tree',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                ],
-              ),
+      compressionSteps.isEmpty
+          ? _buildPlaceholder(
+        'Select an image to see Huffman tree visualization',
+        screenSize,
+      )
+          : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildVisualizationControls(screenSize),
+          SizedBox(height: screenSize.height * 0.02),
+          Expanded(child: _buildHuffmanVisualization(screenSize)),
+          SizedBox(height: screenSize.height * 0.01),
+          if (currentStep < compressionSteps.length - 1)
+            const Text(
+              'Merging nodes with lowest frequencies',
+              style: TextStyle(color: Colors.white70),
+            ),
+          if (currentStep == compressionSteps.length - 1)
+            const Text(
+              'Final Huffman tree',
+              style: TextStyle(color: Colors.white70),
+            ),
+          if (currentStep == compressionSteps.length - 1)
+            ElevatedButton.icon(
+              onPressed: () {
+                _downloadTree(
+                  context,
+                  compressionSteps.last.first,
+                  screenSize,
+                );
+              },
+              icon: const Icon(Icons.download),
+              label: const Text('Download Tree'),
+            ),
+        ],
+      ),
     );
   }
 
@@ -90,7 +232,7 @@ class VisualizationTabWidget extends StatelessWidget {
         SizedBox(width: screenSize.width * 0.02),
         IconButton(
           onPressed:
-              currentStep < compressionSteps.length - 1 ? onNextStep : null,
+          currentStep < compressionSteps.length - 1 ? onNextStep : null,
           icon: const Icon(Icons.skip_next),
           tooltip: 'Next step',
         ),
@@ -100,12 +242,12 @@ class VisualizationTabWidget extends StatelessWidget {
         DropdownButton<double>(
           value: stepDuration,
           items:
-              [0.5, 1.0, 2.0, 3.0].map((s) {
-                return DropdownMenuItem(
-                  value: s,
-                  child: Text('${s.toStringAsFixed(1)}s'),
-                );
-              }).toList(),
+          [0.5, 1.0, 2.0, 3.0].map((s) {
+            return DropdownMenuItem(
+              value: s,
+              child: Text('${s.toStringAsFixed(1)}s'),
+            );
+          }).toList(),
           onChanged: (val) {
             if (val != null) {
               onStepDurationChanged(val);
@@ -129,9 +271,9 @@ class VisualizationTabWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(screenSize.width * 0.04),
       ),
       child:
-          currentStep == compressionSteps.length - 1
-              ? _buildFinalTreeView(currentNodes.first, screenSize)
-              : _buildNodesListView(currentNodes, screenSize),
+      currentStep == compressionSteps.length - 1
+          ? _buildFinalTreeView(currentNodes.first, screenSize)
+          : _buildNodesListView(currentNodes, screenSize),
     );
   }
 
@@ -154,34 +296,34 @@ class VisualizationTabWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 HuffmanNode node = nodes[index];
                 return Card(
-                      margin: EdgeInsets.symmetric(
-                        vertical: screenSize.height * 0.005,
+                  margin: EdgeInsets.symmetric(
+                    vertical: screenSize.height * 0.005,
+                  ),
+                  color:
+                  node.pixelValue != null
+                      ? Colors.blue.withOpacity(0.2)
+                      : Colors.deepPurple.withOpacity(0.2),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor:
+                      node.pixelValue != null
+                          ? Colors.blue.shade700
+                          : Colors.deepPurple.shade700,
+                      child: Text(
+                        node.getCode(),
+                        style: const TextStyle(color: Colors.white),
                       ),
-                      color:
-                          node.pixelValue != null
-                              ? Colors.blue.withOpacity(0.2)
-                              : Colors.deepPurple.withOpacity(0.2),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor:
-                              node.pixelValue != null
-                                  ? Colors.blue.shade700
-                                  : Colors.deepPurple.shade700,
-                          child: Text(
-                            node.getCode(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        title: Text(
-                          node.toString(),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        trailing: Text(
-                          'Frequency: ${node.frequency}',
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                    )
+                    ),
+                    title: Text(
+                      node.toString(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Text(
+                      'Frequency: ${node.frequency}',
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                )
                     .animate()
                     .fadeIn(duration: 300.ms)
                     .slideX(begin: 0.2, end: 0, duration: 300.ms);
@@ -198,7 +340,7 @@ class VisualizationTabWidget extends StatelessWidget {
     double horizontalMargin = 40.0;
     double estimatedWidth =
         TreeWidthCalculator.calculateTreeWidth(root, nodeSpacing) +
-        horizontalMargin * 2;
+            horizontalMargin * 2;
     estimatedWidth = max(estimatedWidth, screenSize.width);
 
     return Padding(
@@ -227,6 +369,7 @@ class VisualizationTabWidget extends StatelessWidget {
                     animation: animation,
                     builder: (context, child) {
                       return CustomPaint(
+                        key: _treeBoundaryKey,
                         size: Size(
                           estimatedWidth - horizontalMargin * 2,
                           screenSize.height * 1.5,
