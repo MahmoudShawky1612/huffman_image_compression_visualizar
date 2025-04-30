@@ -13,7 +13,9 @@ Huffman Image Compressor is a Flutter-based application that compresses grayscal
 ## Screenshots
 
 ### Home Screen
-![Home Screen](screenshots/home_screen.png)
+![Home Screen]
+![Screenshot_2025-04-30-06-26-20-82_0f2d7d5cbe181983326ccc95b3097528](https://github.com/user-attachments/assets/d4e2aeec-f8d0-4f2d-8cf0-e2155a6cfdab)
+
 
 ### Huffman Tree Visualization
 ![Huffman Tree Visualization](screenshots/tree_visualization.png)
