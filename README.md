@@ -27,8 +27,8 @@ Huffman Image Compressor is a Flutter-based application that compresses grayscal
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/MahmoudShawky1612/huffman-image-compressor.git
-   cd huffman-image-compressor
+   git clone https://github.com/MahmoudShawky1612/huffman_image_compression_visualizar.git
+   cd huffman_image_compression_visualizar
    ```
 
 2. Install dependencies:
