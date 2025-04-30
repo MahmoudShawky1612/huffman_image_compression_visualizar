@@ -1,4 +1,3 @@
-![Screenshot_2025-04-30-06-26-46-09_0f2d7d5cbe181983326ccc95b3097528](https://github.com/user-attachments/assets/4e3721b7-2d33-4146-aada-0a31c069c562)# Huffman Image Compressor
 
 Huffman Image Compressor is a Flutter-based application that compresses grayscale images using the Huffman coding algorithm. The app provides a visual representation of the Huffman tree-building process and allows users to download the final Huffman tree as a PDF or PNG.
 
@@ -28,7 +27,7 @@ Huffman Image Compressor is a Flutter-based application that compresses grayscal
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/huffman-image-compressor.git
+   git clone https://github.com/MahmoudShawky1612/huffman-image-compressor.git
    cd huffman-image-compressor
    ```
 
