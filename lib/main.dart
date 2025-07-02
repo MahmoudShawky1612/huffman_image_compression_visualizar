@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'image_compressor.dart';
+import 'core/image_compressor.dart';
 
 void main() {
   runApp(const MyApp());

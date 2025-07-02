@@ -5,13 +5,13 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
-import 'app_bar_widget.dart';
-import 'details_tab_widget.dart';
-import 'home_tab_widget.dart';
-import 'huffman_class.dart';
-import 'image_utils.dart';
-import 'status_bar_widget.dart';
-import 'visualization_tab_widget.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/details_tab_widget.dart';
+import '../widgets/home_tab_widget.dart';
+import '../huffman/huffman_class.dart';
+import '../utils/image_utils.dart';
+import '../widgets/status_bar_widget.dart';
+import '../widgets/visualization_tab_widget.dart';
 
 class ImageCompressor extends StatefulWidget {
   const ImageCompressor({super.key});

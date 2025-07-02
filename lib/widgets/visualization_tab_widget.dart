@@ -9,10 +9,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
-
-import 'huffman_class.dart';
-import 'huffman_tree_painter.dart';
-import 'tree_width_calculator.dart';
+import '../huffman/huffman_class.dart';
+import '../huffman/huffman_tree_painter.dart';
+import '../huffman/tree_width_calculator.dart';
 
 class VisualizationTabWidget extends StatelessWidget {
   final Size screenSize;
@@ -210,22 +209,20 @@ class VisualizationTabWidget extends StatelessWidget {
       children: [
         Text(
           'Step ${currentStep + 1}/${compressionSteps.length}',
-          style: TextStyle(fontSize: 14.4.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 10.4.sp, fontWeight: FontWeight.bold),
         ),
-        const Spacer(),
-        IconButton(
+         SizedBox(width: 10.w,),
+         IconButton(
           onPressed: currentStep > 0 ? onPreviousStep : null,
           icon: const Icon(Icons.skip_previous),
           tooltip: 'Previous step',
         ),
-        SizedBox(width: 7.2.w),
-        IconButton(
+         IconButton(
           onPressed: onToggleAnimation,
           icon: Icon(isAnimating ? Icons.pause : Icons.play_arrow),
           tooltip: isAnimating ? 'Pause animation' : 'Play animation',
         ),
-        SizedBox(width: 7.2.w),
-        IconButton(
+         IconButton(
           onPressed:
               currentStep < compressionSteps.length - 1 ? onNextStep : null,
           icon: const Icon(Icons.skip_next),
