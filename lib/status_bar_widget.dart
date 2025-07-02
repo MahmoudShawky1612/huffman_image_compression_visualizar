@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StatusBarWidget extends StatelessWidget {
   final Size screenSize;
@@ -18,22 +19,22 @@ class StatusBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: screenSize.height * 0.01,
-        horizontal: screenSize.width * 0.04,
+        vertical: 6.9.h,
+        horizontal: 14.4.w,
       ),
       color: Colors.black26,
       child: Row(
         children: [
           if (isLoading)
             SizedBox(
-              width: screenSize.width * 0.04,
-              height: screenSize.width * 0.04,
+              width: 14.4.w,
+              height: 14.4.w,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 color: Colors.deepPurple.shade200,
               ),
             ),
-          if (isLoading) SizedBox(width: screenSize.width * 0.03),
+          if (isLoading) SizedBox(width: 10.8.w),
           Expanded(
             child: Text(
               statusMessage,

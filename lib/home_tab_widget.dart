@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeTabWidget extends StatelessWidget {
   final Size screenSize;
@@ -19,18 +20,18 @@ class HomeTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(screenSize.width * 0.04),
+      padding: EdgeInsets.all(14.4.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Image Preview',
             style: TextStyle(
-              fontSize: screenSize.width * 0.045,
+              fontSize: 16.2.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: screenSize.height * 0.02),
+          SizedBox(height: 13.8.h),
           Expanded(
             child: Center(
               child:
@@ -51,11 +52,11 @@ class HomeTabWidget extends StatelessWidget {
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(screenSize.width * 0.04),
+        borderRadius: BorderRadius.circular(14.4.w),
       ),
       color: Colors.black12,
       child: Padding(
-        padding: EdgeInsets.all(screenSize.width * 0.04),
+        padding: EdgeInsets.all(14.4.w),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final imageSize = constraints.maxWidth * 0.4;
@@ -72,28 +73,28 @@ class HomeTabWidget extends StatelessWidget {
                       originalImage.hashCode.toString(),
                       imageSize,
                     ),
-                  SizedBox(width: screenSize.width * 0.04),
+                  SizedBox(width: 14.4.w),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.arrow_forward,
                         color: Colors.deepPurple.shade200,
-                        size: screenSize.width * 0.08,
+                        size: 28.8.w,
                       ),
-                      SizedBox(height: screenSize.height * 0.01),
+                      SizedBox(height: 6.9.h),
                       if (compressionRatio != null)
                         Text(
                           '${compressionRatio!.toStringAsFixed(2)}x smaller',
                           style: TextStyle(
                             color: Colors.deepPurple.shade200,
                             fontWeight: FontWeight.bold,
-                            fontSize: screenSize.width * 0.035,
+                            fontSize: 12.6.sp,
                           ),
                         ),
                     ],
                   ),
-                  SizedBox(width: screenSize.width * 0.04),
+                  SizedBox(width: 14.4.w),
                   if (grayscaleImage != null)
                     _buildImageCard(
                       'Grayscale (.hff output)',
@@ -121,32 +122,33 @@ class HomeTabWidget extends StatelessWidget {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           child: Container(
             width: imageSize,
             height: imageSize,
             decoration: BoxDecoration(
-              border: Border.all(color: color, width: 2),
-              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: color, width: 2.w),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: Image.file(image, fit: BoxFit.cover, key: ValueKey(key)),
           ),
         ),
-        SizedBox(height: imageSize * 0.05),
+        SizedBox(height: (imageSize * 0.05).h),
         Container(
           padding: EdgeInsets.symmetric(
-            horizontal: imageSize * 0.08,
-            vertical: imageSize * 0.03,
+            horizontal: (imageSize * 0.08).w,
+            vertical: (imageSize * 0.03).h,
           ),
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(imageSize * 0.08),
+            borderRadius: BorderRadius.circular((imageSize * 0.08).r),
           ),
           child: Text(
             label,
-            style: const TextStyle(
+            style:   TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              fontSize: 14.4.sp,
             ),
           ),
         ),
@@ -161,15 +163,15 @@ class HomeTabWidget extends StatelessWidget {
         children: [
           Icon(
             Icons.image_search,
-            size: screenSize.width * 0.15,
+            size: 54.w,
             color: Colors.deepPurple.shade200,
           ),
-          SizedBox(height: screenSize.height * 0.02),
+          SizedBox(height: 13.8.h),
           Text(
             message,
             style: TextStyle(
               color: Colors.deepPurple.shade200,
-              fontSize: screenSize.width * 0.04,
+              fontSize: 14.4.sp,
             ),
             textAlign: TextAlign.center,
           ),

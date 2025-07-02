@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'huffman_class.dart';
 
@@ -14,7 +15,7 @@ class HuffmanTreePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Map<HuffmanNode, double> xPositions = {};
     int totalPositions = _calculateXPositions(root, xPositions);
-    double nodeSpacing = 60.0;
+    double nodeSpacing = 60.0.w;
     double totalWidth = totalPositions * nodeSpacing;
     double minX = double.infinity;
     double maxX = double.negativeInfinity;
@@ -27,7 +28,7 @@ class HuffmanTreePainter extends CustomPainter {
     double xOffset = (size.width - totalWidth) / 2 - minX * xScale;
     if (xOffset.isNaN || xOffset.isInfinite) xOffset = 0.0;
     int depth = _maxDepth(root);
-    double topPad = 40, bottomPad = 40;
+    double topPad = 40.h, bottomPad = 40.h;
     double availH = size.height - topPad - bottomPad;
     double vStep = depth > 1 ? availH / (depth - 1) : availH;
 
@@ -46,7 +47,7 @@ class HuffmanTreePainter extends CustomPainter {
           ..style = PaintingStyle.fill;
     final textStyle = TextStyle(
       color: Colors.white,
-      fontSize: 12,
+      fontSize: 12.sp,
       fontWeight: FontWeight.bold,
     );
 
@@ -56,7 +57,7 @@ class HuffmanTreePainter extends CustomPainter {
       final double y = topPad + nodeDepth * vStep;
       final Offset pos = Offset(x, y);
       final isLeaf = node.left == null && node.right == null;
-      canvas.drawCircle(pos, 20, isLeaf ? leafPaint : nodePaint);
+      canvas.drawCircle(pos, 20.r, isLeaf ? leafPaint : nodePaint);
       String nodeText =
           isLeaf && node.pixelValue != null
               ? "${node.pixelValue}"
@@ -74,14 +75,14 @@ class HuffmanTreePainter extends CustomPainter {
         canvas.drawLine(pos, leftPos, edgePaint);
         final labelPos = Offset.lerp(pos, leftPos, 0.4)!;
         TextPainter(
-            text: const TextSpan(
+            text:   TextSpan(
               text: '0',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 12.sp),
             ),
             textDirection: TextDirection.ltr,
           )
           ..layout()
-          ..paint(canvas, labelPos - const Offset(8, 8));
+          ..paint(canvas, labelPos - Offset(8.w, 8.h));
         drawNode(node.left, nodeDepth + 1, progress);
       }
 
@@ -92,14 +93,14 @@ class HuffmanTreePainter extends CustomPainter {
         canvas.drawLine(pos, rightPos, edgePaint);
         final labelPos = Offset.lerp(pos, rightPos, 0.4)!;
         TextPainter(
-            text: const TextSpan(
+            text:   TextSpan(
               text: '1',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 12.sp),
             ),
             textDirection: TextDirection.ltr,
           )
           ..layout()
-          ..paint(canvas, labelPos - const Offset(0, 12));
+          ..paint(canvas, labelPos - Offset(0, 12.h));
         drawNode(node.right, nodeDepth + 1, progress);
       }
     }

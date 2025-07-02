@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppBarWidget extends StatelessWidget {
   final Size screenSize;
@@ -18,20 +19,20 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: screenSize.height * 0.02,
-        horizontal: screenSize.width * 0.02,
+        vertical: 16.h,
+        horizontal: 8.w,
       ),
       child: Column(
         children: [
           Row(
             children: [
-              Icon(Icons.compress, size: screenSize.width * 0.08),
+              Icon(Icons.compress, size: 28.8.w),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
                   'Huffman Image Compressor',
                   style: TextStyle(
-                    fontSize: screenSize.width * 0.06,
+                    fontSize: 21.6.sp,
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -47,8 +48,8 @@ class AppBarWidget extends StatelessWidget {
                     label: const Text('Select Image'),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.width * 0.04,
-                        vertical: screenSize.height * 0.01,
+                        horizontal: 14.4.w,
+                        vertical: 4.h,
                       ),
                     ),
                   ),
@@ -56,7 +57,7 @@ class AppBarWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: screenSize.height * 0.02),
+          SizedBox(height: 16.h),
           TabBar(
             controller: tabController,
             tabs: const [

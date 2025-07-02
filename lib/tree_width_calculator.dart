@@ -1,10 +1,11 @@
 import 'huffman_class.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TreeWidthCalculator {
   static double calculateTreeWidth(HuffmanNode root, double nodeSpacing) {
     Map<HuffmanNode, double> xPositions = {};
     int totalPositions = _calculateXPositions(root, xPositions);
-    return totalPositions * nodeSpacing;
+    return totalPositions * nodeSpacing.w;
   }
 
   static int _calculateXPositions(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailsTabWidget extends StatelessWidget {
   final Size screenSize;
@@ -13,7 +14,7 @@ class DetailsTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(screenSize.width * 0.04),
+      padding: EdgeInsets.all(14.4.w),
       child:
           huffmanCodes == null
               ? _buildPlaceholder(
@@ -26,22 +27,22 @@ class DetailsTabWidget extends StatelessWidget {
                   Text(
                     'Huffman Codes',
                     style: TextStyle(
-                      fontSize: screenSize.width * 0.045,
+                      fontSize: 16.2.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: screenSize.height * 0.02),
+                  SizedBox(height: 13.8.h),
                   Expanded(
                     child: Card(
                       elevation: 8,
                       color: Colors.black12,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                          screenSize.width * 0.04,
+                          14.4.w,
                         ),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(screenSize.width * 0.04),
+                        padding: EdgeInsets.all(14.4.w),
                         child: _buildHuffmanCodesTable(screenSize),
                       ),
                     ),
@@ -72,13 +73,13 @@ class DetailsTabWidget extends StatelessWidget {
               Flexible(
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.width * 0.02,
-                    vertical: screenSize.height * 0.005,
+                    horizontal: 7.2.w,
+                    vertical: 3.45.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.deepPurple.shade700,
                     borderRadius: BorderRadius.circular(
-                      screenSize.width * 0.04,
+                      14.4.w,
                     ),
                   ),
                   child: SingleChildScrollView(
@@ -94,10 +95,10 @@ class DetailsTabWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: screenSize.width * 0.02),
+              SizedBox(width: 7.2.w),
               Text(
                 '(${code.length} bits)',
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                style: TextStyle(color: Colors.grey, fontSize: 12.sp),
               ),
             ],
           ),
@@ -113,15 +114,15 @@ class DetailsTabWidget extends StatelessWidget {
         children: [
           Icon(
             Icons.image_search,
-            size: screenSize.width * 0.15,
+            size: 54.w,
             color: Colors.deepPurple.shade200,
           ),
-          SizedBox(height: screenSize.height * 0.02),
+          SizedBox(height: 13.8.h),
           Text(
             message,
             style: TextStyle(
               color: Colors.deepPurple.shade200,
-              fontSize: screenSize.width * 0.04,
+              fontSize: 14.4.sp,
             ),
             textAlign: TextAlign.center,
           ),
